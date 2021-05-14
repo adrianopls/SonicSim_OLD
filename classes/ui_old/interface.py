@@ -1,4 +1,5 @@
 
+import os
 import wx
 import wx.aui as aui
 
@@ -48,17 +49,26 @@ def create_menu(frame):
     menubar = wx.MenuBar()
     
     menu_model = wx.Menu()
-    menu_model.Append(-1, "&Load model", "Load a model from file")
-    menu_model.Append(-1, "&Create model", "Create a new model")
+    item_lm =  menu_model.Append(1001, "&Load model", "Load a model from file")
+    frame.Bind(wx.EVT_MENU, on_open, id=1001)
+    
+    item_cm = menu_model.Append(-1, "&Create model", "Create a new model")
+    item_cm.Enable(False)    
     menu_model.Append(-1, "&Save model", "Save a model to a file")
     menu_model.AppendSeparator()
-    menu_model.Append(-1, "Exit", "Exits aplication")
+    
+    item_exit_app = menu_model.Append(wx.ID_EXIT, "Exit", "Exits aplication")
+
+    #frame.Bind(wx.EVT_MENU, wx.App.g, id=wx.ID_EXIT)
+    
+    
     menubar.Append(menu_model, "Model")
     
   
     menu_sim = wx.Menu()  
     menu_sim.Append(-1, "Staggered grid", "")
-    menu_sim.Append(-1, "Rotated Staggered grid", "")
+    item_rsg = menu_sim.Append(-1, "Rotated Staggered grid", "")
+    item_rsg.Enable(False)
     menubar.Append(menu_sim, "Simulation type")
     
     menu_about = wx.Menu()
@@ -74,11 +84,31 @@ def create_menu(frame):
     
     
     
+#def frame_exit()
     
     
     
-    
-    
+def on_open(*args, **kwargs):
+    wildcard = "Load segmentated file (*.png)|*.png"
+    try:
+        fdlg = wx.FileDialog(wx.App.Get().GetTopWindow(), 
+                             'Escolha o arquivo PGG', 
+                             wildcard=wildcard, 
+                             style=wx.FD_OPEN|wx.FD_FILE_MUST_EXIST
+        )
+        if fdlg.ShowModal() == wx.ID_OK:
+            file_name = fdlg.GetFilename()
+            dir_name = fdlg.GetDirectory()
+            fdlg.Destroy()
+        else:
+            fdlg.Destroy()
+            return
+        fullfilename = os.path.join(dir_name, file_name)    
+        #gripy_app = wx.App.Get()
+        print(fullfilename)
+    except Exception as e:
+        print ('ERROR [on_open]:', str(e))
+        raise   
     
     
     

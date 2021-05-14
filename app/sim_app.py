@@ -1,7 +1,10 @@
 
 import wx
+from classes import class_register
+from . import interface
+#
+from classes.UIManager import UIManager
 
-from classes.ui import interface
 
 class SimApp(wx.App):
     
@@ -18,14 +21,29 @@ class SimApp(wx.App):
         
         
     def OnInit(self):
+        
+        class_register.register_app_classes()
+        
         self.load_app_interface()
+        
         return True        
     
  
     def load_app_interface(self):
+
         if not wx.App.Get():
-            raise Exception('ERROR: wx.App not found.')    
-        mwc = interface.load()
+            raise Exception('ERROR: wx.App not found.')
+            
+        interface.load()
+        mwc = interface.get_main_window_controller()
         mwc.Show()
+        self.SetTopWindow(mwc.view)      
+
         
-        self.SetTopWindow(mwc)     
+        
+    #TODO: REMOVER ISSO!!    
+    def get_manager_class(self, obj_tid):
+
+        return UIManager    
+
+    
